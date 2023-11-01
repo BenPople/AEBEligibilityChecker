@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eligibility Checker</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      .custom-select:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      }
+
+      .custom-select:hover {
+        cursor: pointer;
+        border-color: #007bff;
+      }
+
+      .custom-select {
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card p-4 shadow-sm">
+            <h2 id="questionHeader" class="text-center mb-4">
+              LearnTech - Funded Tech Courses
+            </h2>
+            <h3 id="questionHeader" class="text-center mb-4">
+                Check Your Eligibility!
+              </h3>
+            <p id="questionText" class="mt-4">Please select your course:</p>
+            <div class="form-group">
+              <select id="courseSelection" class="form-control custom-select">
+                <option value="L3coding">Certificate in Coding Practices - Level 3</option>
+                <option value="L3cyber">Certificate in Cyber Security Practices - Level 3</option>
+                <option value="L2coding">Certificate in Understanding Coding - Level 2</option>
+                <option value="L2cyber">Certificate in the Principles of Cyber Security - Level 2</option>
+              </select>
+            </div>
+            <button
+              id="nextBtn"
+              onclick="startQuestions()"
+              class="btn btn-primary btn-block"
+            >
+              Next
+            </button>
+            <button
+              id="yesBtn"
+              onclick="answer(true)"
+              class="btn btn-success btn-block mt-3"
+              style="display: none"
+            >
+              Yes
+            </button>
+            <button
+              id="noBtn"
+              onclick="answer(false)"
+              class="btn btn-danger btn-block mt-2"
+              style="display: none"
+            >
+              No
+            </button>
+            <button
+              id="resetBtn"
+              onclick="resetChecker()"
+              class="btn btn-info btn-block mt-2"
+              style="display: none"
+            >
+              Reset Checker
+            </button>
+
+            <h2 id="resultText" class="text-center mt-5"></h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      let currentLevel = "";
+      let currentQuestion = 0;
+
+      const L2Questions = [
+        "I live in England, AND have lived within the UK or EEA for the past three years",
+        'I have checked my postcode is eligible for funding using <a href="https://learn-tech.com/ftceligibility">https://learn-tech.com/ftceligibility</a>',
+        "I am unemployed and claim any state benefit, OR I earn less than £20,319 (National Living Wage)",
+        "I am aged 19-23 and I hold a Level 2 qualification, OR I am aged 24+ with any or no qualifications",
+      ];
+
+      const L3Questions = [
+        "I live in England, AND have lived within the UK or EEA for the past three years",
+        'I have checked my postcode is eligible for funding using <a href="https://learn-tech.com/ftceligibility">https://learn-tech.com/ftceligibility</a>',
+        "I am unemployed and claim any state benefit, OR I earn less than £20,319 (National Living Wage)",
+        "I do not have a Level 3 qualification, OR I do have a Level 3 qualification and I am unemployed and claim a benefit / earn under £20,319",
+      ];
+
+      function startQuestions() {
+        currentLevel = document
+          .getElementById("levelSelector")
+          .value.substring(0, 2);
+        currentQuestion = 0;
+        document.getElementById("yesBtn").style.display = "inline";
+        document.getElementById("noBtn").style.display = "inline";
+        nextQuestion();
+      }
+
+      function nextQuestion() {
+        if (currentLevel === "L2") {
+          document.getElementById("questionText").innerHTML =
+            L2Questions[currentQuestion];
+        } else {
+          document.getElementById("questionText").innerHTML =
+            L3Questions[currentQuestion];
+        }
+      }
+
+      function answer(isYes) {
+        if (!isYes) {
+          document.getElementById("resultText").innerText = "Ineligible";
+          document.getElementById("yesBtn").style.display = "none";
+          document.getElementById("noBtn").style.display = "none";
+          document.getElementById("resetBtn").style.display = "inline-block";
+          return;
+        }
+
+        currentQuestion++;
+
+        if (currentLevel === "L2" && currentQuestion === L2Questions.length) {
+          document.getElementById("resultText").innerText = "Eligible";
+          document.getElementById("yesBtn").style.display = "none";
+          document.getElementById("noBtn").style.display = "none";
+          return;
+        }
+
+        if (currentLevel === "L3" && currentQuestion === L3Questions.length) {
+          document.getElementById("resultText").innerText = "Eligible";
+          document.getElementById("yesBtn").style.display = "none";
+          document.getElementById("noBtn").style.display = "none";
+          return;
+        }
+
+        nextQuestion();
+      }
+
+      function startQuestions() {
+        currentLevel = document
+          .getElementById("courseSelection")
+          .value.substring(0, 2);
+        document.getElementById("courseSelection").style.display = "none";
+        document.getElementById("nextBtn").style.display = "none";
+        document.getElementById("yesBtn").style.display = "inline-block";
+        document.getElementById("noBtn").style.display = "inline-block";
+        currentQuestion = 0;
+        nextQuestion();
+      }
+
+      function resetChecker() {
+        document.getElementById("courseSelection").style.display = "block";
+        document.getElementById("nextBtn").style.display = "block";
+        document.getElementById("yesBtn").style.display = "none";
+        document.getElementById("noBtn").style.display = "none";
+        document.getElementById("resetBtn").style.display = "none";
+        document.getElementById("resultText").innerText = "";
+        document.getElementById("questionText").innerText =
+          "Please select your course:";
+      }
+    </script>
+  </body>
+</html>
